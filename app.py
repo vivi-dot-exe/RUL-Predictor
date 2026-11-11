@@ -192,3 +192,55 @@ if predict_btn:
 
   st.progress(float(ratio))
 
+  # Visual Status Callout Banner
+  if prediction > 120:
+    st.success(
+        "**Nominal Operating Condition**: Telemetry indicates normal wear"
+        " tolerances. Engine is cleared for standard flight operations."
+    )
+  elif prediction > 40:
+    st.warning(
+        "**Moderate Degradation Detected**: Thermal and static pressure"
+        " increases indicate accelerating wear. Schedule maintenance"
+        " inspection within the upcoming service window."
+    )
+  else:
+    st.error(
+        "**Critical Failure Imminent**: Telemetry indicates advanced degradation"
+        " and high failure probability. Ground engine immediately for"
+        " overhaul."
+    )
+
+  st.divider()
+
+  # Key Subsystem Diagnostics
+  st.subheader("Critical Component Diagnostics")
+  d1, d2, d3 = st.columns(3)
+  with d1:
+    s11_val = float(st.session_state.sensor_values.get("sensor_11", 47.15))
+    s11_diff = s11_val - 47.15
+    st.metric(
+        "HPC Static Pressure (Ps30)",
+        f"{s11_val:.2f} psia",
+        delta=f"{s11_diff:+.2f} psia vs nominal",
+        delta_color="inverse",
+    )
+  with d2:
+    s4_val = float(st.session_state.sensor_values.get("sensor_4", 1400.0))
+    s4_diff = s4_val - 1400.0
+    st.metric(
+        "LPT Coolant Temp (T50)",
+        f"{s4_val:.1f} °R",
+        delta=f"{s4_diff:+.1f} °R vs nominal",
+        delta_color="inverse",
+    )
+  with d3:
+    s9_val = float(st.session_state.sensor_values.get("sensor_9", 9050.0))
+    s9_diff = s9_val - 9050.0
+    st.metric(
+        "Physical Core Speed (Nc)",
+        f"{s9_val:.1f} rpm",
+        delta=f"{s9_diff:+.1f} rpm vs nominal",
+        delta_color="inverse",
+    )
+
